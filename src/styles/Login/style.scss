@@ -1,0 +1,81 @@
+// posicion de botones de paginacion
+.bottom-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  // background-color: #fff; /* Opcional: Fondo blanco para el ejemplo */
+  padding: 10px; /* Añade espaciado para mejorar la apariencia */
+  z-index: 999; /* Opcional: Asegura que esté en la parte superior de otros elementos */
+}  
+  
+  
+  
+  #logo-mg-sesion {
+    position: absolute;
+    top: -13%;
+    left: 25%; /* el centro del div */
+    transform: translateX(-50%, -50%); /* para centrar la imagen horizontalmente */
+    // border-radius: 30px;
+    width: 52%;
+    height: 23%;
+  
+  }
+  .mg-sesion{
+    width: 100%; /* Puedes ajustar este valor según tus necesidades */
+    height: 100%;
+    object-fit: cover;
+    // border-radius: 30px;
+    // background-size: cover;
+
+  }
+
+  .custom-datepicker {
+    background: "green";
+    color: red !important; /* Color azul */
+    font-family: Arial, sans-serif; /* Cambio de tipo de letra */
+    /* Agrega otros estilos personalizados aquí */
+  }
+
+  @media (max-width: 820px) {
+    /* Estilos para tamaños de pantalla de tablets y teléfonos */
+    .card {
+      width: 100%; /* Reducir el ancho del card en pantallas pequeñas */
+    //   height: 110% !important;
+      margin: 20% auto; /* Centrar el card en pantallas pequeñas */
+    }
+    #logo-mg-sesion {
+        width: 51%; /* Reducir el tamaño del logo en pantallas muy pequeñas */
+        height: 140px;
+      }
+  }
+
+
+  /* Agregar estos estilos para hacer el diseño más responsive */
+@media (max-width: 768px) {
+    /* Estilos para tamaños de pantalla de tablets y teléfonos */
+    .card {
+      width: 100%; /* Reducir el ancho del card en pantallas pequeñas */
+    //   height: 110% !important;
+      margin: 10% auto; /* Centrar el card en pantallas pequeñas */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    /* Estilos para tamaños de pantalla de teléfonos */
+    #logo-mg-sesion{
+      width: 50%; /* Reducir el tamaño del logo en pantallas muy pequeñas */
+      height: 120px;
+    }
+    .card {
+        // width: 100%; /* Reducir el ancho del card en pantallas pequeñas */
+      //   height: 110% !important;
+        margin: 7% auto 5%; /* Centrar el card en pantallas pequeñas */
+      }
+  }
+  
+  
+  
+  
+  
+  

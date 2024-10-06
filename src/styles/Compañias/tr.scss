@@ -1,0 +1,36 @@
+#dat-f :hover {
+    cursor: pointer !important;
+    // background: #02a507 !important;
+  }
+
+  .borderB{
+    border-bottom: 1px solid black;
+  }
+
+
+  .responsive-modal {
+    .modal-content {
+      width: 80%; /* Adjust the width as needed for different devices */
+      margin: 0 auto; /* Center the modal horizontally */
+    }
+  }
+  
+
+/* Estilos para pantallas pequeñas (teléfonos) */
+@media (max-width: 767px) {
+  .custom-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Estilos para tabletas y pantallas más grandes */
+@media (min-width: 768px) {
+  .custom-table {
+    width: 100%;
+  }
+}
+
+
+

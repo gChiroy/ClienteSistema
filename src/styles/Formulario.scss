@@ -1,0 +1,18 @@
+.tabla {
+	display: table;
+	width: 100%;
+	border-collapse: collapse;
+  }
+  
+  .fila {
+	display: table-row;
+	background-color: rgb(80, 11, 65);
+	margin-top: 10px; /* Aplicar margin-top de 10px a todas las filas */
+	border-radius: 10px; /* Aplicar border-radius de 10px a todas las filas */
+  }
+  
+  .columna {
+	display: table-cell;
+	padding: 5px;
+  }
+  

@@ -1,0 +1,33 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  button {
+    margin-bottom: 20px;
+  }
+  
+  .btn_Transparent{
+    cursor: 'pointer';
+    background-color: 'transparent'; /* Quita el relleno*/
+    color: 'black';
+    border: 'none'; /*/ Quita el contorno*/
+  }
+  .tables-container {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .table1,
+  .table2 {
+    flex: 0 0 100%;
+  }
+  
+  .show-table2 {
+    transform: translateX(-100%);
+  }
+  

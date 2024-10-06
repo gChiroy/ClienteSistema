@@ -1,0 +1,60 @@
+.icon-action {
+  &--edit {
+    color: #05b1ff;
+  }
+  &--delete {
+    color: red;
+  }
+  &--print {
+    color: #ccc;
+  }
+}
+
+/* Estilo para números entre 0 y 1 (rojo) */
+.stock-red {
+  background-color: red;
+  color: white;
+  // font-size: large;
+  // font-weight: bold;
+
+}
+
+/* Estilo para números entre 2 y 5 (naranja) */
+.stock-orange {
+  background: orange;
+  color: #000;
+  // font-size: large;
+  // font-weight: bold;
+}
+
+/* Estilo para números mayores o iguales a 6 (verde) */
+.stock-green {
+  background-color: green;
+  color: white;
+  // font-size: large;
+  // font-weight: bold;
+}
+
+.red {
+  color: red;
+}
+
+.orange {
+  color: orange;
+}
+
+.green {
+  color: green;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+}
+
+fixed-header thead th { /* the thead selector is required because there are th elements in the body */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+}
