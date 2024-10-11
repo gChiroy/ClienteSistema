@@ -1,4 +1,5 @@
 import React from 'react';
+import { HiOutlineChevronDoubleLeft, HiOutlineChevronLeft, HiOutlineChevronRight, HiOutlineChevronDoubleRight } from 'react-icons/hi2';
 import { Button } from 'reactstrap';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -41,7 +42,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           className="rounded-circle me-1"
           style={{ width: '40px', height: '40px' }}
         >
-          <i className="bi bi-chevron-double-left"></i>
+          <HiOutlineChevronDoubleLeft />
         </Button>
         <Button
           onClick={() => onPageChange(currentPage - 1)}
@@ -50,7 +51,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           className="rounded-circle me-1"
           style={{ width: '40px', height: '40px' }}
         >
-          <i className="bi bi-chevron-left"></i>
+          {/* <i className="bi bi-chevron-left"></i> */}
+          <HiOutlineChevronLeft />
         </Button>
         {renderPageNumbers()}
         <Button
@@ -61,6 +63,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           style={{ width: '40px', height: '40px' }}
         >
           <i className="bi bi-chevron-right"></i>
+          <HiOutlineChevronRight />
         </Button>
         <Button
           onClick={() => onPageChange(totalPages)}
@@ -69,7 +72,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           className="rounded-circle ms-1"
           style={{ width: '40px', height: '40px' }}
         >
-          <i className="bi bi-chevron-double-right"></i>
+          <HiOutlineChevronDoubleRight />
         </Button>
       </div>
       <div className="text-muted mt-2">
@@ -80,4 +83,3 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 export default Pagination;
-

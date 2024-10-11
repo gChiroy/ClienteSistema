@@ -51,7 +51,6 @@ const ModalAddProduct = (props) => {
    // Crear un estado para los valores del formulario
    const [values, setValues] = useState({
     code_product: '',
-    profit_porc: '',
     name: '',
     categoryId: '',
     detail: '',
@@ -111,7 +110,7 @@ const ModalAddProduct = (props) => {
       const { name, value, files } = e.target;
     
       // Si el campo debe aceptar solo números, reemplaza los caracteres no numéricos
-      if (name === 'code_product' || name === 'profit_porc') {
+      if (name === 'code_product' ) {
         const numericValue = value.replace(/[^0-9.]/g, ''); // Permitir también puntos decimales
         setValues({ ...values, [name]: numericValue });
       } else {
@@ -139,7 +138,6 @@ const ModalAddProduct = (props) => {
       // const formData = new FormData();
       // formData.append('image', values.image);
       // formData.append('code_product', values.code_product);
-      // formData.append('profit_porc', values.profit_porc);
       // formData.append('name', values.name);
       // formData.append('brands_id_brands', values.brandId);
       // formData.append('categories_id_category', values.categoryId);
@@ -149,7 +147,6 @@ const ModalAddProduct = (props) => {
       formData.append('name', values.name);
       formData.append('detail', values.detail);
       formData.append('code_product', values.code_product);
-      formData.append('profit_porc', values.profit_porc);
       formData.append('brands_id_brands', values.brandId);
       formData.append('categories_id_category', values.categoryId);
       formData.append('image', values.image);
@@ -165,7 +162,6 @@ const ModalAddProduct = (props) => {
         const data = await response.json();
         if(response.ok){
           setValues({ code_product: '',
-          profit_porc: '',
           name: '',
           brandId: '',
           categoryId: '',
@@ -287,22 +283,7 @@ const ModalAddProduct = (props) => {
           </FormGroup>          
 
           <Row>
-            <Col md="6" className="mb-3">
-            <Label htmlFor="profit_porc" className="form-label">
-              Margen de Beneficio
-            </Label>
-            <Input
-              onChange={handleChange}
-              type='number'
-              value={values.profit_porc || ''}
-              className="form-control"
-              id="profit_porc"
-              name="profit_porc"
-              placeholder="20"
-            />
-            {errors.profit_porc && <div className="invalid-feedback">{errors.profit_porc}</div>}
-            </Col>
-
+            
             <Col md="6" className="mb-3">
             <Label htmlFor="name" className="form-label">
               Nombre Producto
@@ -319,9 +300,7 @@ const ModalAddProduct = (props) => {
             />
             {errors.name && <div className="invalid-feedback">{errors.name}</div>}
             </Col>
-          </Row>
 
-          <Row>
             <Col md="6" className="mb-3">
               <Label htmlFor="categoryId" className="form-label">
                 Categoria
@@ -346,6 +325,8 @@ const ModalAddProduct = (props) => {
               {errors.categoryId && <div className="invalid-feedback">{errors.categoryId}</div>}
             </Col>
           </Row>
+
+
 
           <div className="mb-3">
             <Label htmlFor="detail" className="form-label">

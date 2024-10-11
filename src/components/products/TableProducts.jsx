@@ -76,7 +76,7 @@ const TableProduct = (props)=>{
                               : 'Categoria Eliminado'}
                           </b>{' '}
                           <br />
-                          Fecha de creacion: {selectedProduct.createdAt} <br />
+                          F creacion: {selectedProduct.createdAt.split(' ')[0]} <br />
                           {/* Ultima Actualizacion: {selectedProduct.updatedAt} */}
                         </p>
                       </Col>
@@ -113,10 +113,9 @@ const TableProduct = (props)=>{
             <th>Imagen</th>
             <th>Codigo</th>
             <th>
-              Producto <br /> -Detalles-
+              Producto 
             </th>
             <th>Categoria</th>
-            <th>Margen Ben</th>
             <th>Fecha</th>
             <th>Accion</th>
           </tr>
@@ -136,21 +135,19 @@ const TableProduct = (props)=>{
             <td>{startIndex + index + 1}</td>
 
             <td>
-            {product.url_product ? (
+              {product.url_product ? (
                 <Card style={{ width: '5rem' }}>
-                  <img src={product.url_product} alt="Name Products" />
+                  <img src={product.url_product} alt="Producto" />
                 </Card>
               ) : (
-                <Card style={{ width: '5rem', background: 'pink' }}>
-                  <span style={{ fontSize: '40px' }}>?</span>
-                  {/* {product.name} */}
+                <Card style={{ width: '5rem'}}>
+                  <span style={{ fontSize: '40px' }}>{product.id_product}</span>
                 </Card>
               )}
             </td>
-            <td>{Math.round(product.profit_porc * 100)}</td>
             <td>
               <p>
-                <b>{product.name}</b> <br /> {product.detail}
+                <b>{product.name}</b> : {product.detail}
               </p>
             </td>
             {/* <td>{product.brand.name}</td> */}
@@ -161,8 +158,7 @@ const TableProduct = (props)=>{
                     : 'Categoria Eliminado'}
             </td>
 
-            <td>{product.profit_porc}%</td>
-            <td>{product.createdAt}</td>
+            <td>{product.createdAt.split(' ')[0]}</td>
             <td>
               <Button
                     color="primary"
@@ -222,19 +218,18 @@ const TableProduct = (props)=>{
             <td>
               {product.url_product ? (
                 <Card style={{ width: '5rem' }}>
-                  <img src={product.url_product} alt="Name Products" />
+                  <img src={product.url_product} alt="Producto" />
                 </Card>
               ) : (
-                <Card style={{ width: '5rem', background: 'pink' }}>
-                  <span style={{ fontSize: '40px' }}>?</span>
-                  {/* {product.name} */}
+                <Card style={{ width: '5rem'}}>
+                  <span style={{ fontSize: '40px' }}>{product.id_product}</span>
                 </Card>
               )}
             </td>
             <td>{product.code_product}</td>
             <td>
               <p>
-                <b>{product.name}</b> <br /> {product.detail}
+                <b>{product.name}</b> : {product.detail}
               </p>
             </td>
             {/* <td>{product.brand.name}</td> */}
@@ -246,8 +241,8 @@ const TableProduct = (props)=>{
                     ? product.category.type
                     : 'Categoria Eliminado'}
             </td>
-            <td>{product.profit_porc}%</td>
-            <td>{product.createdAt}</td>
+            
+            <td>{product.createdAt.split(' ')[0]}</td>
             <td>
               <Button
                     color="primary"

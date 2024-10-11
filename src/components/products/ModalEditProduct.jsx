@@ -97,7 +97,6 @@ const EditModalProduct = ( props) => {
       formData.append('name', updatedProvider.name);
       formData.append('detail', updatedProvider.detail);
       formData.append('code_product', updatedProvider.code_product);
-      formData.append('profit_porc', updatedProvider.profit_porc);
       // formData.append('brands_id_brands', updatedProvider.brands_id_brands);
       formData.append('categories_id_category', updatedProvider.categories_id_category);
 
@@ -218,25 +217,7 @@ const EditModalProduct = ( props) => {
             </FormGroup>
           </Col>
           <Row>
-          <Col md="6" className="mb-3">
-          <FormGroup className='w-100'>
-            <Label htmlFor="passwprofit_porcord" className="form-label">
-              Margen de Beneficio
-            </Label>
-              <Input
-                  
-                onChange={handleChange}
-                type='number'
-                value={editedProvider.profit_porc || ''}
-                className="form-control"
-                id="profit_porc"
-                name="profit_porc"
-                placeholder="12"
-                required
-              />
-            </FormGroup>
-            
-            </Col>
+         
             <Col md="6" className="mb-3">
             <FormGroup className="">
               <Label htmlFor="name" className="form-label">
@@ -250,15 +231,13 @@ const EditModalProduct = ( props) => {
                   id="name"
                   name="name"
                   value={editedProvider.name || ''}
-                  placeholder="Licuadora"
+                  placeholder="Ingrese producto"
                   required
                 />
               </InputGroup>
             </FormGroup>
             </Col>
-          </Row>
 
-          <Row>
             <Col md="6" className="mb-3">
             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
               <Label htmlFor="KLJ" className="form-label">
@@ -293,6 +272,7 @@ const EditModalProduct = ( props) => {
             </FormGroup>
             </Col>
           </Row>
+
 
           <div className="mb-3">
           <Label htmlFor="detail" className="form-label">

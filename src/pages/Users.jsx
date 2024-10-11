@@ -440,7 +440,7 @@ const Users = (props) => {
         
 
         </div>
-          <div className='col-12 d-flex justify-content-end'>
+          <div className='col-12 d-flex justify-content-center'>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

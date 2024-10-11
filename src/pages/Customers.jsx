@@ -76,7 +76,7 @@ const Customers = (props) => {
         const filtered = usuarios.filter(
           (usuario) =>
             usuario?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            usuario?.dpi.toLowerCase().includes(searchTerm.toLowerCase()),
+            usuario?.nit.toLowerCase().includes(searchTerm.toLowerCase())
         )
         setFilteredUsuarios(filtered)
       }
@@ -367,7 +367,7 @@ const Customers = (props) => {
         <ToastContainer/>
 
         </div>
-          <div className='col-12 d-flex justify-content-end'>
+          <div className='col-12 d-flex justify-content-center'>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
