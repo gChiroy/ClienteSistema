@@ -1,17 +1,3 @@
-// import { Modal, ModalBody, Spinner } from "reactstrap";
-
-// export const ModalSpinner = (props) =>{
-//     const { loading } = props;
-
-//     return(
-//         <>
-//     <Modal isOpen={loading} centered backdrop="static" keyboard={false}>
-//         <ModalBody className="text-center">
-//           <p>Espere...</p>
-//         </ModalBody>
-//       </Modal></>
-//     )
-// }
 
 import { Spinner } from "reactstrap";
 

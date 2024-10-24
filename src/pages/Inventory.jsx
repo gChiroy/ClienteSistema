@@ -6,7 +6,7 @@ import { TbBrandShopee } from "react-icons/tb"
 import TableInvenProd from '../components/TableInventario'
 import Pagination from '../providers/Pagination'
 import SearchInput from '../providers/InputSearch'
-import { Alert, Input, Label } from 'reactstrap'
+import { Alert, Button, Input, Label } from 'reactstrap'
 import TablaProductos from '../components/inventory/tableCategories'
 import { ModalSpinner } from '../providers/ModalSpinner'
 
@@ -160,16 +160,20 @@ const getInventorypro = async () => {
           
         </div>
 
-        {/* <div className="row p-2 ">
-          <div className="col-6 ">
-            select de filtros
+        <div className="row p-2">
+          <div className="col-4">
           </div>
-
-          <div className="col-6 d-flex justify-content-end">
-            registros
+          <div className="col-4">
+          <Link to='/inventorysale' className="links">
+            <Button color='primary'>Salidas</Button>
+            </Link>
           </div>
-        </div> */}
-
+          <div className="col-4">
+          <Link to='/inventorypurchases' className="links">
+            <Button color='primary'>Entradas</Button>
+            </Link>
+          </div>
+        </div>
       
           {loading ? (
             <ModalSpinner loading={loading} />

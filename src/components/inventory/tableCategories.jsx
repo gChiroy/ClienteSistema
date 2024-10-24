@@ -99,8 +99,8 @@ const TablaProductos = ( props ) => {
       <Table responsive>
         <thead>
           <tr>
-            <th colSpan={12}>
-              <h4>{categoria}</h4>
+           <th style={{borderColor:'grey', borderTopRightRadius:'5px', borderTopLeftRadius:'5px'}} colSpan={12}>
+              <strong className='d-flex justify-content-center fs-4'>{categoria}</strong>
             </th>
           </tr>
           <tr>

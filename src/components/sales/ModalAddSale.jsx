@@ -21,6 +21,11 @@ import {
   Alert,
   Card,
   CardBody,
+  Row,
+  Col,
+  CardImg,
+  CardTitle,
+  CardText,
 } from 'reactstrap'
 
 dayjs.extend(weekOfYear)
@@ -39,49 +44,40 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import { ModalSpinner } from '../../providers/ModalSpinner'
 import SearchInput from '../../providers/InputSearch'
+import { GiCancel } from 'react-icons/gi'
 import { MdFileDownloadDone } from 'react-icons/md'
-import { FaEdit } from 'react-icons/fa'
 
-const ModalAddP = (props) => {
+const ModalAddS = (props) => {
   const URL = import.meta.env.VITE_URL_API;
-      /*Realizar accion si caja esta abierta*/
-      const [status, setStatus] = useState(null)
-
-      useEffect(() => {
-        fetch(`${URL}/api/status`, {
-          credentials: 'include'
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setStatus(data.status);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }, [status]);
-       /*fin */
  const { Update } = props;
   /* isOpen (globalstate) -> para que el contenido se ajuste según el ancho de la sidebar (navegación) */
   const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
-    // bill_number: '',
-    provider_id: '',
-    // details: [{
-    //   //id: 'temp-1',
-    //     id_product: "",
-    //     amount: "",
-    //     purchase_price: "",
-    //     discount: "",
-    //   }],
-    details: [   // Otros detalles temporales
-    ],
+    proforma_number: '',
+    customerId: '',
+    tax: '',
+    details: [],
   })
 
-  const [provider, setProvider] = useState([])
+  const [status, setStatus] = useState(null)
+
+  useEffect(() => {
+    fetch(`${URL}/api/status`,{
+      credentials:'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setStatus(data.status);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [status]);
+
+  const [customer, setCustomer] = useState([])
   const [amount, setAmount] = useState(0)
   const [purchasePrice, setPurchasePrice] = useState(0)
-  const [salePrice, setSalePrice] = useState(0)
   const [discount, setDiscount] = useState(0)
 
 
@@ -100,7 +96,7 @@ const ModalAddP = (props) => {
   const getProduct = async () => {
     // setLoading(true);
     try {
-      const response = await fetch(`${URL}/api/allProducts`, {
+      const response = await fetch(`${URL}/api/allInventorySales`, {
         credentials: 'include',
       })
       const data = await response.json()
@@ -121,14 +117,14 @@ const ModalAddP = (props) => {
 
   const [selectedProvider, setSelectedProvider] = useState(null)
   const [isRegisterButtonDisabled, setIsRegisterButtonDisabled] = useState(true)
-  const getProvider = async () => {
+  const getCustomer = async () => {
     try {
-      const response = await fetch(`${URL}/api/getdelProvider`, {
+      const response = await fetch(`${URL}/api/allCustomers`, {
         credentials: 'include',
       })
 
       const data = await response.json()
-      setProvider(data)
+      setCustomer(data)
       // console.log('Proveedores', data)
     } catch (error) {
       console.log(error)
@@ -136,7 +132,7 @@ const ModalAddP = (props) => {
   }
 
   useEffect(() => {
-    getProvider()
+    getCustomer()
   }, [])
 
   const handleProviderChange = (event, newValue) => {
@@ -147,7 +143,7 @@ const ModalAddP = (props) => {
       // Actualiza provider_id en formData con el id del proveedor seleccionado
       setFormData({
         ...formData,
-        provider_id: newValue.id_provider.toString(), // Asegúrate de convertirlo a cadena
+        customerId: newValue.id_customer.toString(), // Asegúrate de convertirlo a cadena
       })
       setIsRegisterButtonDisabled(false) // Habilitar el botón
       // setIsRegisterButtonDisabled(!newValue);
@@ -156,7 +152,7 @@ const ModalAddP = (props) => {
       // Si se deselecciona un proveedor, establece provider_id en vacío
       setFormData({
         ...formData,
-        provider_id: '',
+        customerId: '',
       })
       setIsRegisterButtonDisabled(true) // Deshabilita el botón
       // setIsRegisterButtonDisabled(!newValue);
@@ -171,11 +167,11 @@ const ModalAddP = (props) => {
     if (selectedProvider) {
       // selectedProvider contiene el objeto del proveedor seleccionado
       // Puedes acceder a selectedProvider.id para obtener el id_provider
-      const idProvider = selectedProvider.id_provider
-      // console.log('ID del proveedor seleccionado:', idProvider)
+      const idProvider = selectedProvider.id_customer
+      // console.log('ID del cliente seleccionado:', idProvider)
 
       // También puedes acceder a formData.provider_id para obtener el id_provider seleccionado
-      // console.log('formData.provider_id:', formData.provider_id)
+      // console.log('formData.customerId:', formData.customerId)
 
       // Luego, puedes realizar la acción de registro aquí utilizando el idProvider o formData.provider_id
       setIsRegisterButtonDisabled(true)
@@ -192,13 +188,10 @@ const ModalAddP = (props) => {
     return addedProducts.includes(productId)
   }
 
-  // const isProductSelected = (productId) => {
-  //   // return selectedProduct && selectedProduct.id_product === productId;
-  //   return selectedProduct.some((product) => product.id_product === productId)
-  // }
-  const isProductSelected = (id_product) => {
-    return selectedProduct.some((p) => p.id_product === id_product);
-  };
+  const isProductSelected = (productId) => {
+    // return selectedProduct && selectedProduct.id_product === productId;
+    return selectedProduct.some((product) => product.id_inventory === productId)
+  }
 
   const handleEditClick = (index) => {
     setEditIndex(index)
@@ -210,11 +203,20 @@ const ModalAddP = (props) => {
     updatedDetails[editIndex] = {
       ...updatedDetails[editIndex],
       amount,
-      purchase_price: purchasePrice,
-      sale_price: salePrice,
       discount,
     }
 
+    const detail = updatedDetails[editIndex];
+    const subtotal =
+      (parseFloat(amount) * parseFloat(detail.producto.public_price.toFixed(2))) -
+      parseFloat(discount || 0);
+  
+    updatedDetails[editIndex] = {
+      ...detail,
+      subtotal: subtotal.toFixed(2), // Almacenar el subtotal en el detalle
+    };
+
+//actializar la tabla
     setFormData({
       ...formData,
       details: updatedDetails,
@@ -223,55 +225,56 @@ const ModalAddP = (props) => {
     // Reiniciar el estado de edición
     setEditIndex(-1)
 
-    const total = updatedDetails.reduce((acc, detail) => {
-      return (
-        acc +
-        detail.amount * detail.purchase_price -
-        (detail.discount || 0) // Si el descuento está vacío, se considera 0
-      );
-    }, 0);
+  const total = updatedDetails.reduce((acc, detail) => {
+    return acc + (parseFloat(detail.amount) * parseFloat(detail.producto.public_price) - parseFloat(detail.discount || 0));
+  }, 0);
   
     // Actualizar el estado del total
     setTotal(total);
   }
 
+
+  const [labelResult, setLabelResult] = useState(''); 
+  
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    const { name, value } = e.target;
+  
+    // Verificar si el campo es 'tax' (el campo de entrada que quieres multiplicar)
+    if (name === 'tax') {
+      // Convertir el valor de 'tax' a decimal temporalmente (dividir por 100)
+      const taxAsDecimal = parseFloat(value) / 100;
+  
+      // Realizar la multiplicación con el valor de 'total' y el valor convertido a decimal
+      const newValue = (taxAsDecimal * total) + total; // Asegúrate de que 'total' sea el valor correcto
+  
+      // Almacenar el valor convertido y multiplicado en el estado
+      setFormData({ ...formData, [name]: value, taxAsDecimal }); // taxAsDecimal es opcional si deseas conservar el valor convertido
+  
+      // Actualizar el label con el resultado
+      setLabelResult(newValue.toFixed(2) );
+    } else {
+      // Si no es el campo 'tax', actualizar el estado como lo hacías antes
+      setFormData({ ...formData, [name]: value });
+  
+      // Puedes restablecer el label aquí si lo necesitas
+      setLabelResult('');
+    }
   }
+  
 
-  // const addProductToDetails = () => {
-  //   if (selectedProduct) {
-  //     const newDetail = {
-  //       product_id: selectedProduct.name,
-  //       amount: 1, // You can set a default amount here
-  //       purchase_price: selectedProduct.price,
-  //       discount: 0, // You can set a default discount here
-  //     };
 
-  //     setFormData({
-  //       ...formData,
-  //       details: [...formData.details, newDetail],
-  //     });
-
-  //     setSelectedProduct(null);
-  //     setModalOpen(false);
-  //   }
-  // };
   const [details, setDetails] = useState([]);
   const [total, setTotal] = useState(0); // Estado para el total de la factura
 
 
   const addProductToDetails = () => {
-
-
+    // if (selectedProduct && !isProductAdded(selectedProduct.id_product)) {
     // if(selectedProduct.length > 0){
       const newDetail = selectedProduct.map((selectedProduct) => ({
         // id: `temp-${Math.random()}`,
-        id_product: selectedProduct.id_product,
+        product_id: selectedProduct.id_inventory,
         producto: selectedProduct, 
         amount: '',
-        purchase_price: '',
         discount: 0,
       }))
   
@@ -280,43 +283,34 @@ const ModalAddP = (props) => {
         details: [...formData.details, ...newDetail],
       })
 
+      // Agregar los productos a la lista de productos agregados
       const newAddedProducts = selectedProduct.map(
-        (selectedProduct) => selectedProduct.id_product,
+        (selectedProduct) => selectedProduct.id_inventory,
       )
       setAddedProducts([...addedProducts, ...newAddedProducts])
-    
+      
+      
+
       setSelectedProduct([])
       setModalOpen(false)
   
       // Reiniciar los valores
       setAmount(0)
-      setPurchasePrice(0)
-      setSalePrice(0)
+      // setPurchasePrice(0)
       setDiscount(0)
+    // }
+    // setIsProductSelected(false)
+    // setSelectedProduct(null);
+    // setSelectedProduct([])
 
+    // }
   }
 
       // Función para calcular el subtotal de un detalle
       const calculateSubtotal = (detail) => {
-        return detail.amount * detail.purchase_price - detail.discount;
+        return detail.amount - detail.discount;
       };
   
-        // Función para manejar cambios en la cantidad, precio de compra y descuento
-    const handleDetailChange = (index, field, value) => {
-      const updatedDetails = [...details];
-      updatedDetails[index][field] = value;
-  
-      // Actualizar los detalles
-      setDetails(updatedDetails);
-  
-      // Calcular el nuevo total
-      const newTotal = updatedDetails.reduce((acc, detail) => {
-        return acc + calculateSubtotal(detail);
-      }, 0);
-  
-      // Actualizar el estado del total
-      setTotal(newTotal);
-    };
   
     useEffect(() => {
       // Calcula el total inicial cuando se carga la página (por si ya hay detalles)
@@ -328,7 +322,7 @@ const ModalAddP = (props) => {
 
   const deleteDetail = (id) => {
     const productIdToDelete = formData.details.find(
-      (detail) => detail.producto.id_product === id)?.producto.id_product
+      (detail) => detail.producto.id_inventory === id)?.producto.id_inventory
 
     if (productIdToDelete) {
       // Eliminar el producto del conjunto setAddedProducts
@@ -339,7 +333,7 @@ const ModalAddP = (props) => {
     }
 
     const updatedDetails = formData.details.filter(
-      (detail) => detail.producto.id_product !== id,
+      (detail) => detail.producto.id_inventory !== id,
     )
     setFormData({
       ...formData,
@@ -349,45 +343,32 @@ const ModalAddP = (props) => {
 
   // console.log('ya: ', addedProducts)
 
-  // --------------------------------------------------agregar si no funciona
-  // const handleProductClick = (product) => {
-  //   const productId = product.id_product
-
-  //   // const isAlreadySelected = selectedProduct.some((selectedProduct) => selectedProduct.id_product === product.id_product);
-
-  //   if (isProductSelected(productId)) {
-  //     const updatedSelectedProducts = selectedProduct.filter(
-  //       (selectedProduct) => selectedProduct.id_product !== productId,
-  //     )
-  //     setSelectedProduct(updatedSelectedProducts)
-  //   } else {
-  //     setSelectedProduct([...selectedProduct, product])
-  //   }
-  // }
   const handleProductClick = (product) => {
-    if (selectedProduct.some((p) => p.id_product === product.id_product)) {
-      // Si el producto ya está seleccionado, lo quitamos
-      setSelectedProduct((prevSelected) =>
-        prevSelected.filter((p) => p.id_product !== product.id_product)
-      );
+    const productId = product.id_inventory
+
+
+    if (isProductSelected(productId)) {
+      const updatedSelectedProducts = selectedProduct.filter(
+        (selectedProduct) => selectedProduct.id_inventory !== productId,
+      )
+      setSelectedProduct(updatedSelectedProducts)
     } else {
-      // Si no está seleccionado, lo agregamos
-      setSelectedProduct((prevSelected) => [...prevSelected, product]);
+      setSelectedProduct([...selectedProduct, product])
     }
-  };
-  
-  const [nextBillNumber, setNextBillNumber] = useState(null);
+  }
+
+  const [nextProNumber, setNextProNumber] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const response = await fetch(`${URL}/api/purchase`, {
+      const response = await fetch(`${URL}/api/sale`, {
         method: 'POST',
-        credentials:'include',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       })
 
@@ -398,9 +379,10 @@ const ModalAddP = (props) => {
       // console.log(data)
       if (response.ok) {
         setAddedProducts([]); 
-        setTotal(0);
-        setFormData({ provider_id: '', details: [] })
-        setNextBillNumber(data.bill_number); 
+        setLabelResult('')
+        setTotal(0)
+        setFormData({ customerId: '', tax:'', details: [] })
+        setNextProNumber(data.proforma_number); 
         toggleModal()
         // update()
         Update()
@@ -416,9 +398,7 @@ const ModalAddP = (props) => {
         });
 
       } else {
-        // setSuccess(data.message)
-        // setError(data.error)
-        toast.error(`Algo salio mal`/**${data.errors[0].msg} */, {
+        toast.error(`${data.errors[0].msg}`/**${data.errors[0].msg} */, {
           // position: 'bottom-center',
           position: 'top-center',
           autoClose: 2000,
@@ -439,17 +419,18 @@ const ModalAddP = (props) => {
 
   // Realiza una solicitud al backend para obtener el próximo número de factura
   useEffect(() => {
-    fetch(`${URL}/api/bill`, {
-      credentials: 'include'
+    fetch(`${URL}/api/proform`, {
+      method: "GET",
+      credentials:'include'
     })
       .then((response) => response.json())
       .then((data) => {
-        setNextBillNumber(data.bill_number);
+        setNextProNumber(data.proforma_number);
       })
       .catch((error) => {
         console.error("Error al obtener el próximo número de factura", error);
       });
-  }, [nextBillNumber]);
+  }, [nextProNumber]);
   // console.log("can",amount, 'prec', purchasePrice, 'desc:',discount )
 
 
@@ -460,61 +441,68 @@ const ModalAddP = (props) => {
       //   } else {
       //     const filtered = products.filter(
       //       (product) =>
-      //       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      //       product.code_product.toString().includes(searchTerm.toLowerCase()) 
+      //       product.stock.toString().includes(searchTerm.toLowerCase()) ||
+      //       product.public_price.toString().includes(searchTerm.toLowerCase()) 
       //     )
       //     setfilteredProducts(filtered)
       //   }
       // }
-
+      
       const handleSearch = (searchTerm) => {
-        if (products && products.length > 0) {
+        if (products.length > 0) {
           if (searchTerm === null) {
             setfilteredProducts(products)
           } else {
             const filtered = products.filter(
               (product) =>
-              product?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              product?.code_product.toString().includes(searchTerm.toLowerCase()) 
+              product.Product?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              (product.Product?.detail?.toLowerCase() || "").includes(searchTerm.toLowerCase())||
+              // product.Product.detail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              // product.code_product.toString().includes(searchTerm.toLowerCase()) 
+              product.Product?.code_product?.toString().includes(searchTerm.toLowerCase()) ||
+              product.Product?.brand && product.Product.brand.name !== null && product.Product.brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              product.Product?.category && product.Product.category.type !== null && product.Product.category.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              // (usuario.total !== null && usuario.total.toString().includes(searchTerm.toLowerCase()))
+              product?.stock?.toString().includes(searchTerm.toLowerCase()) ||
+              product?.public_price?.toString().includes(searchTerm.toLowerCase()) 
             )
             setfilteredProducts(filtered)
           }
-        } else {
-          console.error(404)
-          return(
-            <Alert color='danger'>Registra un dato!!!</Alert>
-          )
-          // Manejar el caso en que products está vacío o nulo
-          // Puedes establecer setfilteredProducts([]) o mostrar un mensaje de error, por ejemplo.
         }
-      };
+        else{
+          console.error(404)
+        }
+      }
 
 
-      /***  FIN BUSCADOR **** * */
+      const cancelEdit = (index) => {
+        // Restablece los valores de los inputs a los valores originales
+        setAmount(null);
+        // setPurchasePrice(null);
+        setDiscount(null);
+      
+        // Restablece el índice de edición
+        setEditIndex(-1);
+      }
 
   return (
     <>
       
 
-        
-
-            <div
+        <div
         style={{
           display: 'flex',
           alignItems: 'center',
         }}
-      >
-
-          <Button 
-          disabled={!status}
-          color="primary" 
-          onClick={() => setModalOpenPur(true)}
-          >
-            Registrar compra
-          </Button>
- 
-      </div>
-          
+        >
+        <Button 
+              disabled={!status}
+              color="primary" 
+              onClick={() => setModalOpenPur(true)}
+              >
+                Registrar venta
+              </Button>
+        </div>
         
         <div>
         <Modal 
@@ -525,40 +513,34 @@ const ModalAddP = (props) => {
         fullscreen
         >
                 <ModalHeader toggle={() => setModalOpenPur(!modalOpenPur)}>
-                  Registrar Compras
+                  Registrar Ventas
                 </ModalHeader>
                 <ModalBody>
                 <Card className="rounded">
               <CardBody>
                 <Form onSubmit={handleSubmit}>
-                  <FormGroup>
+                  <div className="row">
+                    <div className="col-6">
+                    <FormGroup>
                     <TextField
-                      value={nextBillNumber || ""}
+                      // value={proforma_number || ""}
                       // onChange={handleInputChange}
-                      disabled
-                      // onChange={(e) => setFormData({ ...formData, bill_number: e.target.value })}
-                      label="Numero de Factura"
+                      name='bill_number'
+                      required
+                      // disabled
+                      onChange={(e) => setFormData({ ...formData, bill_number: e.target.value })}
+                      label="Factura"
                       variant="standard"
                     />
                   </FormGroup>
-                  <FormGroup>
-                    {/* <Label for="provider_id">Proveedor</Label> */}
-                    {/* <Input type="select" name="provider_id" id="provider_id" onChange={handleInputChange}>
-            <option disabled>Selecciona Proveedor</option>
-            {provider.map((provider) =>(
-              <option 
-                key={provider.id_provider}
-                value={provider.id_provider}>
-                  {provider.name}
-
-              </option>
-            ))}
-          </Input> */}
+                    </div>
+                    <div className="col-6">
+                    <FormGroup>
 
                     <div className="d-flex " style={{ alignItems: 'center' }}>
                       <Autocomplete
                         id="combo-box-demo"
-                        options={provider}
+                        options={customer}
                         getOptionLabel={(option) => option.name}
                         onChange={handleProviderChange}
                         style={{ width: '300px' }}
@@ -566,11 +548,12 @@ const ModalAddP = (props) => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Proveedor"
+                            label="Cliente"
                             variant="standard"
                           />
                         )}
                       />
+
                       <Button
                         onClick={handleRegisterProvider}
                         disabled={isRegisterButtonDisabled}
@@ -585,23 +568,28 @@ const ModalAddP = (props) => {
                         <MdFileDownloadDone />
                       </Button>
                     </div>
-                  </FormGroup>
+                    </FormGroup>
+                    </div>
+
+                  </div>
+                  
+             
                   <FormGroup>
                     <div style={{ display: 'flex' }}>
-                      {/* <Label>Detalles</Label> */}
                       <div>
                         <Button
                           title='Agregar detalle'
                           color="success"
                           className='mb-1'
                           onClick={() => setModalOpen(true)}
+
                         >
-                          Agregar Producto
+                          Agregar producto
                         </Button>
                       </div>
                     </div>
 
-                    {formData.details.length > 0 ? (
+                    {formData.details && formData.details.length > 0 ? (
                       <>
                       <Table responsive>
                         <thead>
@@ -610,8 +598,8 @@ const ModalAddP = (props) => {
                             <th>Detalle</th>
                             <th>Cateogoria</th>
                             <th>Cantidad</th>
-                            <th>Precio Compra</th>
-                            <th>Precio Venta</th>
+                            <th>Precio Publico</th>
+                            <th>Disponible</th>
                             <th>Descuento</th>
                             <th>Subtotal</th>
                             <th>Acciones</th>
@@ -621,56 +609,33 @@ const ModalAddP = (props) => {
                           {formData.details.map(
                             (detail, index) =>
                               // Verificar que los campos relevantes no estén en blanco o en valores por defecto
-                              (detail.id_product ||
+                              (detail.product_id ||
                                 detail.amount ||
-                                detail.purchase_price ||
                                 detail.discount) && (
                                 <tr key={index}>
-                                  <td>
-                                    {detail.id_product}- <b>{detail.producto.code_product}</b> - {detail.producto.name}
+                                  <td>{/*si coloco solo detail.product((producto es la que se define en newDetail)trae todos los datos de inventario, para ingresar a producto debe ponerse detail.producto.Product)*/}
+                                    {detail.product_id}- <b>{detail.producto.Product.code_product}</b> - {detail.producto.Product.name}
                                   </td>
-                                  <td>{detail.producto ? detail.producto.detail : 'NA'}</td>
-                                  <td>{detail.producto.category ?(detail.producto.category.type ? detail.producto.category.type : <p style={{color:'red'}}>Sin categoría</p>): <p style={{color:'red'}}>Sin categoría</p>}</td>
+                                  <td>{detail.producto?.Product ? detail.producto.Product.detail : 'NA'}</td>
+                                  <td>{detail.producto.Product.category ?(detail.producto.Product.category.type ? detail.producto.Product.category.type : <p style={{color:'red'}}>Sin categoría</p>): <p style={{color:'red'}}>Sin categoría</p>}</td>
 
                                   <td>
                                     {editIndex === index ? (
                                       <input
                                         type="number"
                                         value={amount}
+                                        className='form-control'
                                         onChange={(e) =>
                                           setAmount(e.target.value)
                                         }
+                                        style={{maxWidth: '5rem'}}
                                       />
                                     ) : (
                                       detail.amount
                                     )}
                                   </td>
-                                  <td>
-                                    {editIndex === index ? (
-                                      <input
-                                        type="number"
-                                        value={purchasePrice}
-                                        onChange={(e) =>
-                                          setPurchasePrice(e.target.value)
-                                        }
-                                      />
-                                    ) : (
-                                      detail.purchase_price
-                                    )}
-                                  </td>
-                                  <td>
-                                    {editIndex === index ? (
-                                      <input
-                                        type="number"
-                                        value={salePrice}
-                                        onChange={(e) =>
-                                          setSalePrice(e.target.value)
-                                        }
-                                      />
-                                    ) : (
-                                      detail.sale_price
-                                    )}
-                                  </td>
+                                  <td>{detail.producto.public_price.toFixed(2)}</td>
+                                  <td>{detail.producto.stock}</td>
                                   <td>
                                     {editIndex === index ? (
                                       // <input type="number" value={discount} onChange={e => setDiscount(Number(e.target.value))} />
@@ -678,23 +643,27 @@ const ModalAddP = (props) => {
                                         type="number"
                                         // value={discount || '0'}
                                         value={discount || 0}
-
+                                        className='form-control'
                                         onChange={(e) =>
                                           setDiscount(e.target.value)
                                         }
+                                        style={{maxWidth: '5rem'}}
+                                        
                                       />
                                     ) : (
                                       detail.discount
                                     )}
                                   </td>
                                   <td>
-                                    {detail.amount * detail.purchase_price -
-                                      detail.discount}
+                                    {(detail.amount * detail.producto.public_price) -detail.discount}
+
                                   </td>
                                   <td>
                                     {editIndex === index ? (
+                                      <>
                                       <Button
-                                        // color="success"
+                                        color="success"
+                                        title='save'
                                         style={{
                                           cursor: 'pointer',
                                           backgroundColor: 'transparent', // Quita el relleno
@@ -705,11 +674,25 @@ const ModalAddP = (props) => {
                                       >
                                         <AiOutlineCheck />
                                       </Button>
+                                      <Button
+                                      color="danger"
+                                      title='cancel'
+                                      style={{
+                                        cursor: 'pointer',
+                                        backgroundColor: 'transparent', // Quita el relleno
+                                        color: 'black',
+                                        border: 'none', // Quita el contorno
+                                        }}
+                                      onClick={() => cancelEdit(detail.producto.id_inventory)}
+                                    >
+                                      <GiCancel/>
+                                    </Button>
+                                      </>
                                     ) : (
                                       <>
                                         <Button
-                                        title='Editar'
-                                          // color="primary"
+                                          color="primary"
+                                          title='edit'
                                           style={{
                                             cursor: 'pointer',
                                             backgroundColor: 'transparent', // Quita el relleno
@@ -718,11 +701,11 @@ const ModalAddP = (props) => {
                                             }}
                                           onClick={() => handleEditClick(index)}
                                         >
-                                          <FaEdit size={20} />
+                                          <RiEditCircleFill size={20} />
                                         </Button>
                                         <Button
-                                          // color="danger"
-                                          title='Eliminar'
+                                          color="danger"
+                                          title='delete'
                                           style={{
                                             cursor: 'pointer',
                                             backgroundColor: 'transparent', // Quita el relleno
@@ -731,7 +714,7 @@ const ModalAddP = (props) => {
                                             }}
                                           onClick={() =>
                                             deleteDetail(
-                                              detail.producto.id_product
+                                              detail.producto.id_inventory
                                             )
                                           }
                                         >
@@ -744,48 +727,85 @@ const ModalAddP = (props) => {
                               ),
                           )}
                           <tr>
-                            <th colSpan='7'><p style={{ fontSize: '1.2rem'}}>Total de Factura</p></th>
-                            <th><span style={{ fontSize: '1.2rem'}}>{total}</span></th>
+                            <td colSpan='7'><b>Total lbre de impuesto</b></td>
+                            <td>
+                            <TextField
+                              value={total} // Asegúrate de utilizar el campo 'tax' del estado
+                              disabled
+                       
+                              variant="standard"
+                              InputProps={{
+                                disableUnderline: true, // Deshabilita la línea inferior
+                              }}
+                              style={{maxWidth: '5rem'}}
+                            />
+                            
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan='7'><b>IVA</b></td>
+                            <td>
+                            <TextField
+                              onChange={handleInputChange}
+                              name='tax'
+                              id='tax'
+                              // onChange={(e) => setFormData({ ...formData, bill_number: e.target.value })}
+                              variant="standard"
+                              style={{maxWidth: '5rem'}}
+                              
+                            />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan='7'><b>TOTAL</b></td>
+                            <td>
+                            <TextField
+                              value={labelResult || ''} // Asegúrate de utilizar el campo 'tax' del estado
+                              disabled
+                              variant="standard"
+                              InputProps={{
+                                disableUnderline: true, // Deshabilita la línea inferior
+                              }}
+                              style={{maxWidth: '5rem'}}
+                            />
+                            </td>
                           </tr>
                         </tbody>
                       </Table>
-                      {/* <Card className="mt-4">
-                      <CardBody>
-                        <h5 className="card-title">Total de Factura</h5>
-                        <p>Total: {total}</p>
+                      <Card>
+                      <CardBody className='d-flex justify-content-end align-items-center'>
+                      <div >
+                     
+                      </div>
                       </CardBody>
-                    </Card> */}
+                    </Card>
+
                       </>
                     ) : (
                       <>
                         <Alert color="danger">
-                          <p>No existen detalles</p>
+                          <p>No hay productos</p>
                         </Alert>
                       </>
                     )}
 
                     {/* <Button onClick={() => setModalOpen(true)}></Button> */}
                   </FormGroup>
-                  {/* {formData.bill_number && formData.provider_id && formData.details.length > 0 && ( */}
-                    {/* <Button type="submit"
-                    disabled={!formData.provider_id || formData.details.length === 0}
-                    color='success'
-                    outline
-                    >
-                      Registrar Compras
-                      </Button> */}
-                  {/* )} */}
 
                   <div className='d-flex justify-content-center p-2'>
-                    <Button className='mx-2' color="danger"
+                    <Button className='mx-1' color="danger" 
                         onClick={()=>setModalOpenPur(false)}          >
                         Cancelar
                     </Button>
                     <Button
                     
                         color="success"
+                        
+                        // onClick={(e) => handleSubmit(e)}
+                        // onClick={handleSubmit(e)}
+                        // onClick={(e) => handleSubmit(e)}
                         type="submit"
-                        disabled={!formData.provider_id || formData.details.length === 0}
+                        disabled={!formData.customerId || formData.details.length === 0}
 
                     >
                         Registrar
@@ -806,76 +826,92 @@ const ModalAddP = (props) => {
         </div>
 
             <div>
-              <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} fullscreen size='lg'>
+              {/* PARA SELECCIONAR UN PRODUCTO AL HACER AGREGAR DETALLE */}
+              <Modal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} >
                 <ModalHeader toggle={() => setModalOpen(!modalOpen)}>
-                  Seleccionar Producto
-                </ModalHeader>                
+                  Selecciona un producto
+                </ModalHeader>
+                {/* <ModalFooter>
+                  
+                </ModalFooter> */}
                 <ModalBody>
                   <div className='container'>
                     <div className='row'>
                       <div className='col-12'>
-                        <SearchInput onSearch={handleSearch} />
+                      <SearchInput onSearch={handleSearch} />
                       </div>
-                      <div className='col-12 d-flex justify-content-start p-2'>
-                        <Button className='mx-1' color="primary" onClick={addProductToDetails}>
-                          Agregar
-                        </Button>
-                        <Button color="danger" onClick={() => setModalOpen(false)}>
-                          Volver
-                        </Button>
+                      <div className='col-12 d-flex justify-content-start  p-2'>
+                      <Button className='mx-1' color="primary" onClick={addProductToDetails}>
+                        Agregar
+                      </Button>
+                      <Button color="danger" onClick={() => setModalOpen(false)}>
+                        Volver
+                      </Button>
                       </div>
-                      <div className='row'>
-                        <div className='col-12'>
-                          <Table responsive>
-                            <thead>
-                              <tr>
-                                <th>Codigo</th>
-                                <th>Nombre</th>
-                                <th>Detalle</th>
-                                <th>Categoria</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {filteredproducts.length > 0 ? (
-                                filteredproducts.map((product, index) => {
-                                  // Definir el color de la fila según las condiciones
-                                  let rowColor = 'lightcoral'; // Rojo por defecto (no está seleccionado)
-                                  
-                                  if (isProductAdded(product.id_product)) {
-                                    rowColor = 'lightblue'; // azul si ya está agregado
-                                  } else if (isProductSelected(product.id_product)) {
-                                    rowColor = 'lightgreen'; // Verde si ha sido seleccionado
-                                  }
+                    <div className='row'>
+                      <div className='col-12'>
+                    
+                  {filteredproducts.length > 0 ? ( 
+                    <>
+                     {
+                    filteredproducts.map((product, index) => {
+                      // Definir el color de la fila según las condiciones
+                      let rowColor = 'lightcoral'; // Rojo por defecto (no está seleccionado)
+                      
+                      if (isProductAdded(product.id_inventory)) {
+                        rowColor = 'lightblue'; // azul si ya está agregado
+                      } else if (isProductSelected(product.id_inventory)) {
+                        rowColor = 'lightgreen'; // Verde si ha sido seleccionado
+                      } else if(product.stock <= 0){
+                        rowColor = 'black';
+                      }
 
-                                  return (
-                                    <tr 
-                                      key={index} 
-                                      onClick={() => {
-                                        if (!isProductAdded(product.id_product)) {
-                                          handleProductClick(product); // Cambia a verde al seleccionar
-                                        }
-                                      }} 
-                                      style={{ cursor: 'pointer' }}
-                                    >
-                                      <td style={{ backgroundColor: rowColor }}>{product.code_product}</td>
-                                      <td style={{ backgroundColor: rowColor }}>{product.name}</td>
-                                      <td style={{ backgroundColor: rowColor }}>{product.detail}</td>
-                                      <td style={{ backgroundColor: rowColor }}>
-                                        {product.category ? (
-                                          product.category.type ? (
-                                            product.category.type
-                                          ) : (
-                                            <p style={{ color: 'red' }}>Sin Categoría</p>
-                                          )
-                                        ) : (
-                                          <p style={{ color: 'red' }}>Sin Categoría</p>
-                                        )}
+                      return (
+                        <Card key={index} 
+                        style={{ borderColor: rowColor,  borderWidth: '5px',
+                          borderStyle: 'solid', cursor: 'pointer' }} 
+                        className="mb-2 shadow-sm"
+                        onClick={() => {
+                          // if (!isProductAdded(product.id_inventory)) {
+                          //   handleProductClick(product); // Cambia a verde al seleccionar
+                          // }
 
-                                        {!isProductAdded(product.id_product) ? (
+                          if (product.stock > 0 && !isProductAdded(product.id_inventory)) {
+                            handleProductClick(product);
+                          }
+                        }} 
+                  
+                        >
+                        <Row className="no-gutters">
+                        <Col xs="12" md="4" className="d-flex align-items-center justify-content-center p-1" style={{ minHeight: '100px' }}>                            {product.Product?.url_product ? (
+                              // <CardImg top src={product.Product.url_product} alt="Imagen del producto" className="h-80 m-2 d-flex" style={{minHeight: '100px'}}/>
+                              <div className="h-80 d-flex align-items-center justify-content-center">
+                                <CardImg 
+                                  src={product.Product.url_product} 
+                                  alt="Imagen del producto" 
+                                  style={{
+                                    maxWidth: '80%',
+                                    maxHeight: '80%',
+                                    objectFit: 'contain'
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <div className="text-center d-flex align-items-center justify-content-center h-50" style={{minHeight: '40px'}}>
+                                <span>Sin imagen</span>
+                              </div>
+                            )}
+                            
+                          </Col>
+                          <Col >
+                            <CardBody>
+                              <CardTitle tag="h5" className="mb-1 text-center">
+                                <b>{product.Product?.name}</b>
+                                {!isProductAdded(product.id_inventory) ? (
                                           <input
                                             type="checkbox"
                                             className='mx-2'
-                                            checked={isProductSelected(product.id_product)}
+                                            checked={isProductSelected(product.id_inventory)}
                                           />
                                         ) : (
                                           <input
@@ -885,20 +921,30 @@ const ModalAddP = (props) => {
                                             disabled
                                           />
                                         )}
-                                      </td>
-                                    
-                                    </tr>
-                                  );
-                                })
-                              ) : (
-                                    <Alert color="danger">
-                                      Sin productos
-                                    </Alert>
-                              )}
-                            </tbody>
-                          </Table>
-                        </div>
+                                </CardTitle> 
+                              <CardText>
+                                <strong>Código:</strong> {product.Product?.code_product}  <strong>Disponible:</strong> {product.stock}<br/>
+                                <strong>Precio Público:</strong> Q{product.public_price.toFixed(2)}<br/>
+                                {/* <strong>Disponible:</strong> {product.stock}<br/> */}
+                                <strong>Categoría:</strong> {product.Product?.category?.type || 'N/A'}<br/>
+                                <strong>Detalle:</strong> {product.Product?.detail}
+                              </CardText>
+                            </CardBody>
+                          </Col>
+                        </Row>
+                      </Card>
+                      );
+                    })
+                  }
+                    </>
+                  ) : (
+                    <Alert color='danger'>no hay datos</Alert>
+                  )
+
+                  }
+
                       </div>
+                    </div>
                     </div>
                   </div>
                 </ModalBody>
@@ -910,4 +956,4 @@ const ModalAddP = (props) => {
   )
 }
 
-export default ModalAddP;
+export default ModalAddS;

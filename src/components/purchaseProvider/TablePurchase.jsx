@@ -281,6 +281,7 @@ export const TablePurchase = (props) => {
                 <td>{purchas?.createdAt ? purchas.createdAt : 'NA'}</td>
                 <td>
                   <Button
+                  disabled={!status}
                     color="primary"
                     title="Editar"
                     style={{
@@ -297,6 +298,7 @@ export const TablePurchase = (props) => {
                     <FiEdit3 title="Editar" />
                   </Button>
                   <Button
+                  disabled={!status}
                     color="danger"
                     title="Eliminar"
                     style={{
@@ -388,6 +390,7 @@ export const TablePurchase = (props) => {
             <td>{purchas?.createdAt ? purchas.createdAt : 'NA'}</td>
             <td>
                   <Button
+                    disabled={!status}
                     color="primary"
                     title="Editar"
                     style={{
@@ -404,6 +407,7 @@ export const TablePurchase = (props) => {
                     <FiEdit3 title="Editar" />
                   </Button>
                   <Button
+                    disabled={!status}
                     color="danger"
                     title="Eliminar"
                     style={{
