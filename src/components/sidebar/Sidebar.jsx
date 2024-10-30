@@ -215,15 +215,14 @@ const Sidebar = (props) => {
             {/* isOpen === true -> se mostrará el h1 por defecto, de lo contrario se oculta */}
             <div className="logo">
               <figure className="m-0">
-                {/* <img className={isOpen ? "logo-restaurante logo-restaurante-open" : "logo-restaurante logo-restaurante-close"} width="20px" src={Logo} alt="Logo restaurante" /> */}
                 <img
-                  style={{ borderRadius: '20px' }}
+                  style={{ borderRadius: '10px' }}
                   className={
                     isOpen
-                      ? 'logo-restaurante logo-restaurante-open'
-                      : 'logo-restaurante logo-restaurante-close'
+                      ? 'logo-tipico logo-tipico-open'
+                      : 'logo-tipico logo-tipico-close'
                   }
-                  src=''
+                  src='https://res.cloudinary.com/dtvauhqrt/image/upload/v1729663622/LogoTipicosChiroy_dlufoe.png'
                   alt="Logo Tipicos Chiroy"
                 />
               </figure>

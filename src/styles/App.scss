@@ -174,11 +174,11 @@ main {
   // font-weight: bold;
 }
 
-aside .top_section .logo-restaurante-open {
+aside .top_section .logo-tipico-open {
   width: var(--logo-image);
 }
 
-aside .top_section .logo-restaurante-close {
+aside .top_section .logo-tipico-close {
   width: var(--logo-image-close);
 }
 
@@ -519,10 +519,10 @@ input[type="number"]:focus {
     margin-top: 10px !important;
   }
 
-  aside .top_section .logo-restaurante-open {
+  aside .top_section .logo-tipico-open {
     width: var(--logo-image--tablet);
   }
-  aside .top_section .logo-restaurante-close {
+  aside .top_section .logo-tipico-close {
     width: var(--logo-image-close--tablet);
   }
 }

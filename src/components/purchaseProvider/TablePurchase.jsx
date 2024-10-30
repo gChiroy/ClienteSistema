@@ -25,6 +25,7 @@ import { BsPrinter } from 'react-icons/bs';
 import { MdOutlineDownloading } from 'react-icons/md';
 import { GrAscend, GrDescend } from 'react-icons/gr';
 import { ImSortAmountDesc } from 'react-icons/im';
+import { ModalSpinner } from '../../providers/ModalSpinner';
 
 
 export const TablePurchase = (props) => {
@@ -73,10 +74,9 @@ export const TablePurchase = (props) => {
     };
 
     const [loading, setLoading] = useState(false);
-    const handleGeneratePDF = () => {
+    const handleGeneratePDF = (id, filename) => {
       setLoading(true);
-      const filename = 'invoice-' + selectedProduct.bill_number; // Nombre del archivo PDF
-      const url = `${URL}/api/purchase/bill/${selectedProduct.id_shopping}/${filename}`;
+      const url = `${URL}/api/purchase/bill/${id}/${filename}`;
       
       fetch(url, {
         method: 'GET',
@@ -330,6 +330,7 @@ export const TablePurchase = (props) => {
                     // onClick={handleGeneratePDF}
                     onClick={(e) => {
                       e.stopPropagation();
+                      handleGeneratePDF(purchas?.id_shopping, purchas?.bill_number)
                       // setModalOpen(false); // Cierra el modal de detalles
                       // handleGeneratePDF
                     }}
@@ -439,6 +440,7 @@ export const TablePurchase = (props) => {
                     // onClick={handleGeneratePDF}
                     onClick={(e) => {
                       e.stopPropagation();
+                      handleGeneratePDF(purchas?.id_shopping, purchas?.bill_number)
                       // setModalOpen(false); // Cierra el modal de detalles
                       // handleGeneratePDF
                     }}
@@ -469,6 +471,7 @@ export const TablePurchase = (props) => {
           
         </>
             </Table>
+            <ModalSpinner loading={loading}/>
         </>
     )
 }

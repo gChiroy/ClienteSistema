@@ -24,6 +24,7 @@ import { MdOutlineDownloading } from 'react-icons/md';
 
 import { GrAscend, GrDescend } from 'react-icons/gr'
 import { ImSortAmountDesc } from 'react-icons/im'
+import { ModalSpinner } from '../../providers/ModalSpinner';
 
 
 export const TableSale = (props) => {
@@ -76,10 +77,10 @@ export const TableSale = (props) => {
     };
     
 
-    const handleGeneratePDF = () => {
+    const handleGeneratePDF = (id) => {
       setLoading(true);
       // const filename = 'invoice-' + selectedProduct.bill_number; // Nombre del archivo PDF
-      const url = `${URL}/api/proforma/${selectedProduct.id_sales}`;
+      const url = `${URL}/api/proforma/${id}`;
       
       fetch(url, {
         method: 'GET',
@@ -344,6 +345,7 @@ export const TableSale = (props) => {
                   disabled={loading} 
                   onClick={(e) => {
                     e.stopPropagation();
+                    handleGeneratePDF(sale?.id_sales)
                     // setModalOpen(false); // Cierra el modal de detalles
                   }}
                   style={{
@@ -447,6 +449,7 @@ export const TableSale = (props) => {
                   disabled={loading} 
                   onClick={(e) => {
                     e.stopPropagation();
+                    handleGeneratePDF(sale?.id_sales)
                     // setModalOpen(false); // Cierra el modal de detalles
                   }}
                   style={{
@@ -479,6 +482,7 @@ export const TableSale = (props) => {
         
         </>
       </Table>
+      <ModalSpinner loading={loading}/>
         </>
 
       //  ) : (
