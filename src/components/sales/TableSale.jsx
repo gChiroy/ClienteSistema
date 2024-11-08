@@ -16,7 +16,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import dayjs from "dayjs";
 import { FiEdit3 } from "react-icons/fi";
 import { AiFillDelete } from "react-icons/ai";
-// import '../../styles/Compañias/tabla.scss'
+
 
 import { FcPrint } from 'react-icons/fc';
 import { BsPrinter } from 'react-icons/bs';

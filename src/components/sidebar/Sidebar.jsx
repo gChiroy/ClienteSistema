@@ -226,7 +226,7 @@ const Sidebar = (props) => {
                   alt="Logo Tipicos Chiroy"
                 />
               </figure>
-              {/* <p className="logo-text-right m-0" style={{ display: isOpen ? "inline" : "none"}}>Café Y Restaurante <br /> La Centenaria</p> */}
+              {/* <p className="logo-text-right m-0" style={{ display: isOpen ? "inline" : "none"}}</p> */}
             </div>
           </section>
           <br />
