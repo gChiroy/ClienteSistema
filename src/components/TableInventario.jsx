@@ -61,7 +61,7 @@ const [productosPorCategoria, setProductosPorCategoria] = useState({});
 
 useEffect(() => {
   // Realiza la llamada al servidor al montar el componente
-  fetch(`${URL}/api/invCat`,{
+  fetch(`${URL}/api/allInventoryproducts`,{
     credentials:'include'
   })
     .then(response => response.json())
